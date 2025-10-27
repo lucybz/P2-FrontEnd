@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, Alert, StyleSheet } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { useSQLiteContext } from "expo-sqlite";
 
 export default function VerifySecurityAnswer() {
-  const db = useSQLiteContext();
+  const db = null;
   const navigation = useNavigation();
   const route = useRoute();
   const { email, securityQuestion } = route.params;

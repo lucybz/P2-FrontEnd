@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, FlatList, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
-import { useSQLiteContext } from "expo-sqlite";
 import { useNavigation } from "@react-navigation/native";
 
 const WordListPage = ({ route }) => {
@@ -10,7 +9,7 @@ const WordListPage = ({ route }) => {
   const [wordList, setWordList] = useState([]);
   const navigation = useNavigation();
   const { userID, listID } = route.params;
-  const db = useSQLiteContext();
+  const db = null;
 
   useEffect(() => {
     if (db && userID && listID) {

@@ -1,4 +1,3 @@
-import { useSQLiteContext } from "expo-sqlite";
 import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
@@ -13,7 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 export default function PickList({ route }) {
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
-  const db = useSQLiteContext();
+  const db = null;
   const [vocabLists, setVocabLists] = useState([]);
   const { userID, vocabHistoryID, dailyWord, definition } = route.params;
   const [selectedID, setSelectedID] = useState<number | null>(null);
