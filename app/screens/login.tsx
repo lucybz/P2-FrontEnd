@@ -1,32 +1,48 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { useSQLiteContext } from "expo-sqlite";
 
 export default function LoginPage() {
   const navigation = useNavigation();
-  const db = useSQLiteContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = async () => {
-    try {
-      const userData = await db.getFirstAsync("SELECT * FROM users WHERE email = ?", [email]);
-      if (!userData) {
-        Alert.alert("Login Failed", "User not found.");
-        return;
-      }
+//here i will need to call the db from curl http://localhost:8080/api/users
 
-      const validUser = await db.getFirstAsync("SELECT * FROM users WHERE email = ? AND password = ?", [email, password]);
-      if (validUser) {
-        navigation.navigate("LandingPage", { userID: validUser.userID });
-      } else {
-        Alert.alert("Login Failed", "Incorrect password.");
+
+
+const API_BASE = "http://localhost:8080";
+// const API_BASE = "https://cst438-project2-group11-63cc69e04d99.herokuapp.com";
+const handleLogin = async () => {
+    try {
+      try {
+        const res = await fetch(`${API_BASE}/api/users/login`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+          },
+          body: JSON.stringify({ email, password })
+        });
+    
+        if (!res.ok) {
+          if (res.status === 401) throw new Error("Incorrect email or password");
+          throw new Error(`Server error (${res.status})`);
+        }
+    
+        const user = await res.json();
+        (navigation as any).navigate("LandingPage", { userID: user.userId });
+
+    
+      } catch (err) {
+        Alert.alert("Login Failed", err?.message || "An unknown error occurred");
       }
-    } catch (error) {
-      Alert.alert("Login Failed", error.message || "An unknown error occurred");
+  }catch (error) {
+      Alert.alert("Error", "An error occurred during login. Please try again.");
+      console.error("Login error:", error);
     }
-  };
+};
+
 
   return (
     <View style={styles.container}>
@@ -34,7 +50,7 @@ export default function LoginPage() {
       <TextInput style={styles.input} placeholder="User Name" value={email} onChangeText={setEmail} />
       <TextInput style={styles.input} placeholder="Password" secureTextEntry value={password} onChangeText={setPassword} />
       <Button title="Log In" onPress={handleLogin} color="#FF5733" />
-      <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}> 
+      <TouchableOpacity onPress={() => (navigation as any).navigate("ForgotPassword")}> 
         <Text style={{ color: "blue", marginTop: 10 }}>Forgot/Reset Password?</Text> 
       </TouchableOpacity>
     </View>

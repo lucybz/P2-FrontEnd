@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { View, FlatList, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
-import { useSQLiteContext } from "expo-sqlite";
 
 const VocabListPage = ({ route }) => {
   const [loading, setLoading] = useState(true);
@@ -10,7 +9,7 @@ const VocabListPage = ({ route }) => {
   const [vocabLists, setVocabLists] = useState([]);
   const { userID } = route.params;
   const [selectedId, setSelectedId] = useState(null);
-  const db = useSQLiteContext();
+  const db = null;
 
   useEffect(() => {
     // Added due to risk of errors
